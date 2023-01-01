@@ -20,6 +20,9 @@ const Profile = () => {
   const [dob, setDob] = useState("");
   const [studentid, setStudentid] = useState("");
   const [facultyid, setFacultyid] = useState("");
+  const [Class, setClass] = useState("");
+  const [department, setDepartment] = useState("");
+  const [section, setSection] = useState("");
 
   useEffect(() => {
     Axios.post("http://localhost:3001/profile", {
@@ -32,6 +35,9 @@ const Profile = () => {
         setDob(response.data[0]["date_of_birth"]),
         setStudentid(response.data[0]["student_id"]),
         setFacultyid(response.data[0]["faculty_id"]);
+      setClass(response.data[0]["class"]);
+      setDepartment(response.data[0]["department"]);
+      setSection(response.data[0]["section"]);
     });
   }, []);
 
@@ -61,6 +67,24 @@ const Profile = () => {
             </li>
             <li key={4}>
               <label>Email :</label> {email}
+            </li>
+            <li key={5}>
+              <label>
+                {studentid === null ? (
+                  <span>Department : {department}</span>
+                ) : (
+                  <span>Class : {Class}</span>
+                )}
+              </label>{" "}
+            </li>
+            <li key={6}>
+              <label>
+                {studentid === null ? (
+                  <span></span>
+                ) : (
+                  <span>Section : {section}</span>
+                )}
+              </label>{" "}
             </li>
           </ul>
         </div>

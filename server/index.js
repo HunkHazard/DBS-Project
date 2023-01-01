@@ -177,8 +177,10 @@ app.post("/profile", (req, res) => {
   let current_user = req.body.userName;
   console.log(current_user);
 
-  const sqlProfile = "SELECT * FROM Member WHERE username = ?";
+  const sqlProfile =
+    "select * from Member as m left join Student as s on m.student_id = s.student_id left join Faculty as f on m.faculty_id = f.faculty_id where username = ?;";
   db.query(sqlProfile, [current_user], (err, result) => {
+    console.log(result);
     res.send(result);
     res.end();
   });
