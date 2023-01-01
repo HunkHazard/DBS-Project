@@ -29,6 +29,35 @@ app.get("/hello", (req, res) => {
   res.send("hell0");
 });
 
+app.post("/fines", (req, res) => {
+  let current_user = req.body.userName;
+  const sqlFines =
+    "select f.book_id as id, b.title as title, f.amount as amount,f.days_overdue as days_overdue from Fine as f join Member as m on f.member_id = m.member_id join Book as b on f.book_id = b.book_id where m.username = ?;";
+  db.query(sqlFines, [current_user], (err, result) => {
+    console.log(result);
+    res.send(result);
+    res.end();
+  });
+});
+
+app.post("/search", (req, res) => {
+  const name = req.body.Query;
+  console.log(name);
+  const search = "%" + name + "%";
+  console.log(search);
+  const search_query =
+    "select b.title as title, a.first_name as fname, a.last_name as lname, g.name as genre, p.publisher as publisher from Book as b left join Author as a on b.author_id = a.author_id left join Copy as c on b.book_id = c.book_id left join Genre as g on b.genre_id = g.genre_id left join Publication as p on c.publication_id = p.publication_id where b.title like ?  or a.first_name like ? or a.last_name like ? or a.nationality like ? or p.publisher like ?;";
+
+  db.query(
+    search_query,
+    [search, search, search, search, search],
+    (err, result) => {
+      console.log(err);
+      res.send(result);
+    }
+  );
+});
+
 // to get user data from the database and send it to the front end
 // app.get('/profile', (req, res) => {
 //     const sqlProfile = "SELECT * FROM Member";
@@ -38,11 +67,13 @@ app.get("/hello", (req, res) => {
 // });
 
 app.post("/profile", (req, res) => {
-  username = req.body.userName;
+  let current_user = req.body.userName;
+  console.log(current_user);
 
   const sqlProfile = "SELECT * FROM Member WHERE username = ?";
-  db.query(sqlProfile, [username], (err, result) => {
+  db.query(sqlProfile, [current_user], (err, result) => {
     res.send(result);
+    res.end();
   });
 });
 
@@ -54,22 +85,60 @@ app.post("/booksIssued", (req, res) => {
   db.query(issuedBooks, [username], (err, result) => {
     console.log(result);
     res.send(result);
+    res.end();
   });
 });
 
 app.post("/login", (req, res) => {
-  const username = req.body.userName;
+  const current_user = req.body.userName;
   const password = req.body.password;
 
   const validate = "select username,password from Member";
 
   db.query(validate, (err, result) => {
+    // this will host data on an api
     // app.get("/login", (req, res1) => {
     //   res1.send(result);
     // });
 
     res.send(result);
+    res.end();
   });
+});
+
+app.post("/signup", (req, res) => {
+  const username = req.body.userName;
+  const firstname = req.body.firstName;
+  const lastname = req.body.lastName;
+  const emailaddress = req.body.emailAddress;
+  const phonenumber = req.body.phoneNumber;
+  const dateofbirth = req.body.dateOfBirth;
+  const password = req.body.password;
+  const studentstate = req.body.Student;
+  const facultystate = req.body.Faculty;
+  console.log(emailaddress);
+  // if (studentstate) {
+  //   const stdclass = req.body.stdClass;
+  //   const section = req.body.Section;
+  //   const insertion = `insert into Member (username, first_name, last_name, phone, email, date_of_birth)
+  //   values ({username},{firstname},{lastname},{phonenumber},{emailaddress},{dateofbirth});
+  //   insert into Student (class, section) values ({stdclass}, {section});
+  //   `;
+  // }
+
+  // if (facultystate) {
+  //   const department = req.body.Department;
+  //   const insertion = `insert into Member(username, first_name, last_name, phone, email, date_of_birth)
+  //   values ({username}, {firstname}, {lastname}, {phonenumber}, {emailaddress}, {dateofbirth});
+  //   insert into Faculty (department) values ({department});`;
+  // }
+
+  // db.query(insertion, (err, result) => {
+  //   console.log(result);
+  //   console.log(err);
+  //   res.send(result);
+  //   res.end();
+  // });
 });
 
 // app.get('/', (req, res) => {

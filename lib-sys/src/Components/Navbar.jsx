@@ -3,7 +3,15 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 
 export default function Navbar() {
-  const [username, setUsername] = useState("");
+  let userIsLoggedOut;
+  let userIsLoggedIn;
+  if (window.localStorage.getItem("username") === "") {
+    userIsLoggedOut = "none";
+    userIsLoggedIn = "";
+  } else {
+    userIsLoggedOut = "";
+    userIsLoggedIn = "none";
+  }
 
   return (
     <div>
@@ -12,6 +20,7 @@ export default function Navbar() {
           <Link className="navbar-brand" to={"/"}>
             Lib-Sys
           </Link>
+
           <button
             className="navbar-toggler"
             type="button"
@@ -25,41 +34,63 @@ export default function Navbar() {
           </button>
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav">
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <Link className="nav-link active" to={"/search"}>
                   Search
                 </Link>
-              </li>
+              </li> */}
 
               <li className="nav-item">
                 <Link
                   className="nav-link active"
                   aria-current="page"
                   to={"/login"}
+                  style={{ pointerEvents: userIsLoggedIn }}
                 >
                   Login
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link active" to={"/signup"}>
+                <Link
+                  className="nav-link active"
+                  to={"/signup"}
+                  style={{ pointerEvents: userIsLoggedIn }}
+                >
                   SignUp
                 </Link>
               </li>
 
               <li className="nav-item">
-                <Link className="nav-link active" to={"/fine"}>
+                <Link
+                  className="nav-link active"
+                  to={"/fine"}
+                  style={{ pointerEvents: userIsLoggedOut }}
+                >
                   Fine
                 </Link>
               </li>
 
               <li className="nav-item">
-                <Link className="nav-link active" to={"/profile"}>
+                <Link
+                  className="nav-link active"
+                  to={"/profile"}
+                  style={{ pointerEvents: userIsLoggedOut }}
+                >
                   Profile
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link">Disabled</Link>
+                <Link
+                  className="nav-link active"
+                  to={"/signout"}
+                  style={{ pointerEvents: userIsLoggedOut }}
+                >
+                  Signout
+                </Link>
               </li>
+              {/* <li className="nav-item">
+                <Link className="nav-link">Disabled</Link>
+              </li> */}
             </ul>
           </div>
         </div>

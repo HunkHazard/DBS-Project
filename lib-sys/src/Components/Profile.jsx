@@ -7,10 +7,11 @@ import { ReactDOM } from "react";
 import { useEffect } from "react";
 import Navbar from "./Navbar";
 
-const Profile = ({ username }) => {
-  const location = useLocation(); //get the location object from the router
+const Profile = () => {
+  // const location = useLocation(); //get the location object from the router
   // basically, the thing that is passed to the component as propsS
   // console.log(location.state);
+  let username = window.localStorage.getItem("username");
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -22,7 +23,7 @@ const Profile = ({ username }) => {
 
   useEffect(() => {
     Axios.post("http://localhost:3001/profile", {
-      userName: location.state,
+      userName: username,
     }).then((response) => {
       setFirstName(response.data[0]["first_name"]),
         setLastName(response.data[0]["last_name"]),
@@ -38,54 +39,16 @@ const Profile = ({ username }) => {
 
   useEffect(() => {
     Axios.post("http://localhost:3001/booksIssued", {
-      userName: location.state,
+      userName: username,
     }).then((response) => {
       // console.log(response.data);
       setBooks(response.data);
     });
   }, []);
 
-  // let books = [
-  //   {
-  //     id: 1,
-  //     name: "Pride and Prejudice",
-  //     author: "XYZ",
-  //     dueDate: "2022-12-12",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Meditations",
-  //     author: "Penguin Classic",
-  //     dueDate: "2022-12-12",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "The fault in our stars",
-  //     author: "ABC",
-  //     dueDate: "2022-12-12",
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "The fault in our stars v2",
-  //     author: "ABC v2",
-  //     dueDate: "2022-12-12",
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "asdasdasda",
-  //     author: "ABC v2",
-  //     dueDate: "2022-12-12",
-  //   },
-  //   {
-  //     id: 6,
-  //     name: "sadajdoiqwueroiqwp",
-  //     author: "ABC v2",
-  //     dueDate: "2022-12-12",
-  //   },
-  // ];
-
   return (
     <div>
+      <Navbar />
       <div className="section heroSec">
         <div className="left info ">
           <h2>Personal Information</h2>
@@ -93,23 +56,14 @@ const Profile = ({ username }) => {
             <li key={1}>
               <label>Name :</label> {firstName} {lastName}
             </li>
-            {/* <li key={2}>369257</li> */}
             <li key={3}>
               <label>Phone :</label> {phone}
             </li>
             <li key={4}>
               <label>Email :</label> {email}
             </li>
-            {/* <li key={5}>Razi 2 Hostel Bolan Road NUST H-12 Islamabad</li> */}
           </ul>
         </div>
-        {/* <div className="right avatar">
-          <img
-            src="src/assets/avatar2.png"
-            alt="Shameekh Naveed"
-            className="avatarImg"
-          />
-        </div> */}
       </div>
 
       <div className="section">

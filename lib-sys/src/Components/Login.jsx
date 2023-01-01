@@ -3,6 +3,8 @@ import { useState } from "react";
 import Axios from "axios";
 import { Link, Navigate, Route, useNavigate } from "react-router-dom";
 import Signup from "./Signup";
+import Profile from "./Profile";
+import Navbar from "./Navbar";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -31,7 +33,8 @@ export default function Login() {
   }
 
   const navigatetoProfile = () => {
-    navigate("/profile", { state: username });
+    navigate("/profile");
+    // , { state: username }
   };
 
   const submitCredentials = () => {
@@ -50,8 +53,11 @@ export default function Login() {
             all_users[index]["password"] == password
           ) {
             console.log("Found!");
+            window.localStorage.setItem("username", username);
+            console.log(window.localStorage.getItem("username"));
             flag = true;
             navigatetoProfile();
+
             break;
           }
         }
@@ -66,6 +72,7 @@ export default function Login() {
 
   return (
     <div>
+      <Navbar />
       <h1 className="form_title">Login</h1>
       <div className="formmsg formmsgerror" />
       <div className="formmsg formmsgsuccess" />
