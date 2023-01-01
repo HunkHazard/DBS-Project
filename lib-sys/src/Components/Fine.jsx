@@ -51,7 +51,11 @@ export default function Fine() {
                   </th>
                   <td key={fine["title"]}>{fine["title"]}</td>
                   <td key={fine["amount"]}>
-                    {fine["amount"] === null ? "0" : fine["amount"]}
+                    {fine["amount"] === null ? (
+                      "0"
+                    ) : (
+                      <span style={{ color: "red" }}> {fine["amount"]} </span>
+                    )}
                   </td>
                   <td key={fine["days_overdue"]}>{fine["days_overdue"]}</td>
                 </tr>

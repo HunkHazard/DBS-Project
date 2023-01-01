@@ -97,7 +97,16 @@ const Profile = () => {
                     {book["first_name"]} {book["last_name"]}
                   </td>
                   <td key={book["due_date"]}>
-                    {book["due_date"].split("T")[0]}
+                    {book["due_date"] >
+                    new Date().toISOString().slice(0, 10) ? (
+                      <span style={{ color: "green" }}>
+                        {book["due_date"].split("T")[0]}
+                      </span>
+                    ) : (
+                      <span style={{ color: "red" }}>
+                        {book["due_date"].split("T")[0]}
+                      </span>
+                    )}
                   </td>
                 </tr>
               );

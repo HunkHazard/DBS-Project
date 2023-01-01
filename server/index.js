@@ -21,12 +21,33 @@ app.get("/hello", (req, res) => {
 
 app.post("/fines", (req, res) => {
   let current_user = req.body.userName;
-  const sqlFines =
-    "select f.book_id as id, b.title as title, f.amount as amount,f.days_overdue as days_overdue from Fine as f join Member as m on f.member_id = m.member_id join Book as b on f.book_id = b.book_id where m.username = ?;";
-  db.query(sqlFines, [current_user], (err, result) => {
+
+  const member_id_query = "select member_id from Member where username = ?";
+  db.query(member_id_query, [current_user], (err, result) => {
     console.log(result);
-    res.send(result);
-    res.end();
+    const member_id = result[0].member_id;
+    // insert new fines if not added already
+    const sql_new_Fines =
+      "insert into Fine (member_id,book_id,copy_id,days_overdue,amount) select i.member_id, i.book_id, i.copy_id,datediff( curdate() , i.date_due),datediff(curdate() , i.date_due) * 10 from Issue as i  left join Fine as f on i.member_id = f.member_id and i.book_id = f.book_id and i.copy_id = f.copy_id where f.member_id is null and i.member_id = ? and i.date_due < curdate();";
+
+    db.query(sql_new_Fines, [member_id], (err, result) => {
+      console.log(result);
+    });
+
+    const update_fines =
+      "update Fine as f join Issue as i on f.member_id = i.member_id and f.book_id = i.book_id and f.copy_id = i.copy_id set f.days_overdue = datediff( curdate() , i.date_due ),f.amount = datediff( curdate() , i.date_due) * 10 where f.member_id = ?;";
+
+    db.query(update_fines, [member_id], (err, result) => {
+      console.log(result);
+    });
+
+    const sqlFines =
+      "select f.book_id as id, b.title as title, f.amount as amount,f.days_overdue as days_overdue from Fine as f join Member as m on f.member_id = m.member_id join Book as b on f.book_id = b.book_id where m.username = ?;";
+    db.query(sqlFines, [current_user], (err, result) => {
+      console.log(result);
+      res.send(result);
+      res.end();
+    });
   });
 });
 
@@ -150,19 +171,7 @@ app.post("/issueBook", (req, res) => {
       });
     }
   });
-
-  // console.log(name);
-  // console.log(book_id);
-  // console.log(copy_id);
 });
-
-// to get user data from the database and send it to the front end
-// app.get('/profile', (req, res) => {
-//     const sqlProfile = "SELECT * FROM Member";
-//     db.query(sqlProfile, (err, result) => {
-//         res.send(result);
-//     });
-// });
 
 app.post("/profile", (req, res) => {
   let current_user = req.body.userName;
@@ -194,11 +203,6 @@ app.post("/login", (req, res) => {
   const validate = "select username,password from Member";
 
   db.query(validate, (err, result) => {
-    // this will host data on an api
-    // app.get("/login", (req, res1) => {
-    //   res1.send(result);
-    // });
-
     res.send(result);
     res.end();
   });
@@ -215,57 +219,7 @@ app.post("/signup", (req, res) => {
   const studentstate = req.body.Student;
   const facultystate = req.body.Faculty;
   console.log(emailaddress);
-  // if (studentstate) {
-  //   const stdclass = req.body.stdClass;
-  //   const section = req.body.Section;
-  //   const insertion = `insert into Member (username, first_name, last_name, phone, email, date_of_birth)
-  //   values ({username},{firstname},{lastname},{phonenumber},{emailaddress},{dateofbirth});
-  //   insert into Student (class, section) values ({stdclass}, {section});
-  //   `;
-  // }
-
-  // if (facultystate) {
-  //   const department = req.body.Department;
-  //   const insertion = `insert into Member(username, first_name, last_name, phone, email, date_of_birth)
-  //   values ({username}, {firstname}, {lastname}, {phonenumber}, {emailaddress}, {dateofbirth});
-  //   insert into Faculty (department) values ({department});`;
-  // }
-
-  // db.query(insertion, (err, result) => {
-  //   console.log(result);
-  //   console.log(err);
-  //   res.send(result);
-  //   res.end();
-  // });
 });
-
-// app.get('/', (req, res) => {
-
-// to take input from the user on the front end
-// app.post('/api/insert', (req, res) => {
-//     const movieName = req.body.movieName;
-//     const movieReview = req.body.movieReview;
-
-//     const sqlInsert = "INSERT INTO movie_review (movieName, movieReview) VALUES (?,?);";
-//     db.query(sqlInsert, [movieName,movieReview], (err, result) => {
-//         console.log(res);
-//     });
-// });
-
-// app.post('/api/login', (req, res) => {
-//     const username = req.body.userName;
-//     const password = req.body.password;
-//     console.log(username, password);
-//     const sqlLogin = "SELECT * FROM Member WHERE first_name = ? AND last_name = ?";
-//     db.query(sqlLogin, [username, password], (err, result) => {
-//         app.get('/valid', (req, res) => {
-//             console.log(result);
-//             res.send(result);
-//         }
-//         );
-//     });
-// }
-// );
 
 app.listen(3001, () => {
   console.log("Server is listening on port 3001");
