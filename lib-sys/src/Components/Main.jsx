@@ -3,14 +3,41 @@ import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import Navbar from "./Navbar";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export default function Main() {
+  const navigate = useNavigate();
+
   const [query, setQuery] = useState("");
   const [books, setBooks] = useState([]);
 
+  const navigatetoProfile = () => {
+    navigate("/profile");
+  };
+
   const issueBook = (b, c) => {
+    if (window.localStorage.getItem("username") == "") {
+      alert("Please login to issue a book");
+      return;
+    }
     console.log(b);
     console.log(c);
+    axios
+      .post("http://localhost:3001/issueBook", {
+        userName: window.localStorage.getItem("username"),
+        book_id: b,
+        copy_id: c,
+      })
+      .then((response) => {
+        if (response.data == false) {
+          alert("Limit reached");
+          return;
+        } else if (response.data == true) {
+          alert("Book issued successfully");
+          navigatetoProfile();
+          return;
+        }
+      });
   };
 
   const submitQuery = (event) => {
@@ -81,10 +108,10 @@ export default function Main() {
               <th key={10} scope="col">
                 Publisher
               </th>
-              <th key={10} scope="col">
+              <th key={11} scope="col">
                 Status
               </th>
-              <th key={10} scope="col">
+              <th key={12} scope="col">
                 Borrow
               </th>
             </tr>

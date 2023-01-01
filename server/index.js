@@ -30,6 +30,7 @@ app.post("/fines", (req, res) => {
   });
 });
 
+//for the search bar on the home page
 app.post("/search", (req, res) => {
   const name = req.body.Query;
   console.log(name);
@@ -46,6 +47,113 @@ app.post("/search", (req, res) => {
       res.send(result);
     }
   );
+});
+
+// to issue books to the users
+// have to add a check for different quantities of books for student and faculty
+
+app.post("/issueBook", (req, res) => {
+  const name = req.body.userName;
+  const book_id = req.body.book_id;
+  const copy_id = req.body.copy_id;
+  let member_id;
+
+  const id_query = "select * from Member where username = ?";
+
+  // get all user data from the database
+  db.query(id_query, name, (err, result) => {
+    member_id = result[0].member_id;
+    console.log(member_id);
+    console.log(result);
+
+    // get the date issued
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, "0");
+    let mm = String(today.getMonth() + 1).padStart(2, "0");
+    let yyyy = today.getFullYear();
+
+    date_issued = yyyy + "-" + mm + "-" + dd;
+
+    // check if the user is a student or a faculty
+    if (result[0].student_id != null) {
+      console.log("student");
+
+      const limit_check_query =
+        "select count(*) as count from Issue where member_id = ?";
+
+      // check if the user has already issued 5 books
+      db.query(limit_check_query, [member_id], (err, result) => {
+        console.log(result[0].count);
+        if (result[0].count === 5) {
+          console.log("limit reached");
+          res.send(false);
+          return;
+        } else {
+          console.log("limit not reached");
+
+          today.setDate(today.getDate() + 15); // add 15 days to the current date
+          dd = String(today.getDate()).padStart(2, "0");
+          mm = String(today.getMonth() + 1).padStart(2, "0");
+          yyyy = today.getFullYear();
+
+          date_due = yyyy + "-" + mm + "-" + dd;
+
+          console.log(date_issued);
+          console.log(date_due);
+
+          const issue_query = "insert into Issue values (?,?,?,?,?)";
+          db.query(
+            issue_query,
+            [member_id, book_id, copy_id, date_issued, date_due],
+            (err, result) => {
+              console.log(err);
+              res.send(true);
+            }
+          );
+        }
+      });
+      // if the user is a faculty
+    } else if (result[0].faculty_id != null) {
+      console.log("faculty");
+
+      // check if the user has already issued 10 books
+      const limit_check_query =
+        "select count(*) as count from Issue where member_id = ?";
+      db.query(limit_check_query, [member_id], (err, result) => {
+        console.log(result[0].count);
+        if (result[0].count === 10) {
+          console.log("limit reached");
+          res.send(false);
+          return;
+        } else {
+          console.log("limit not reached");
+          today.setDate(today.getDate() + 20); // add 20 days to the current date
+          dd = String(today.getDate()).padStart(2, "0");
+          mm = String(today.getMonth() + 1).padStart(2, "0");
+          yyyy = today.getFullYear();
+
+          date_due = yyyy + "-" + mm + "-" + dd;
+
+          console.log(date_issued);
+          console.log(date_due);
+
+          const issue_query = "insert into Issue values (?,?,?,?,?)";
+          db.query(
+            issue_query,
+            [member_id, book_id, copy_id, date_issued, date_due],
+            (err, result) => {
+              console.log(err);
+              res.send(true);
+            }
+          );
+        }
+      });
+    }
+  });
+
+  // console.log(name);
+  // console.log(book_id);
+  // console.log(copy_id);
 });
 
 // to get user data from the database and send it to the front end
