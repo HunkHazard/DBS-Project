@@ -15,16 +15,6 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// to get data from the database and send it to the front end
-// this is the route that the front end will use to get data from the database
-
-// app.get('/api/all-books', (req, res) => {
-//     const sqlSelect = "SELECT book_id,title FROM Book";
-//     db.query(sqlSelect, (err, result) => {
-//         res.send(result);
-//     });
-// });
-
 app.get("/hello", (req, res) => {
   res.send("hell0");
 });
@@ -46,7 +36,7 @@ app.post("/search", (req, res) => {
   const search = "%" + name + "%";
   console.log(search);
   const search_query =
-    "select b.title as title, a.first_name as fname, a.last_name as lname, g.name as genre, p.publisher as publisher from Book as b left join Author as a on b.author_id = a.author_id left join Copy as c on b.book_id = c.book_id left join Genre as g on b.genre_id = g.genre_id left join Publication as p on c.publication_id = p.publication_id where b.title like ?  or a.first_name like ? or a.last_name like ? or a.nationality like ? or p.publisher like ?;";
+    "select * from all_books where title like ? or fname like ? or lname like ? or genre like ? or publisher like ?;";
 
   db.query(
     search_query,

@@ -8,6 +8,8 @@ export default function Main() {
   const [query, setQuery] = useState("");
   const [books, setBooks] = useState([]);
 
+  const issueBook = () => {};
+
   const submitQuery = (event) => {
     event.preventDefault();
 
@@ -25,22 +27,8 @@ export default function Main() {
         setBooks(data);
       });
 
-    // axios
-    //   .post("http://localhost:3001/search", {
-    //     Query: query,
-    //   })
-    //   .then((response) => {
-
-    //     setBooks(response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
-
     console.log(books);
   };
-
-  const search = (e) => {};
 
   return (
     <div>
@@ -91,7 +79,10 @@ export default function Main() {
                 Publisher
               </th>
               <th key={10} scope="col">
-                Publisher
+                Status
+              </th>
+              <th key={10} scope="col">
+                Borrow
               </th>
             </tr>
           </thead>
@@ -108,6 +99,16 @@ export default function Main() {
                   </td>
                   <td key={book["genre"]}>{book["genre"]}</td>
                   <td key={book["publisher"]}>{book["publisher"]}</td>
+                  <td key={book["status"]}>
+                    {book["status"] == "true" ? "Available" : "Not Available"}
+                  </td>
+                  <td key={"something"}>
+                    {book["status"] == "true" ? (
+                      <button type="submit">Issue</button>
+                    ) : (
+                      ""
+                    )}
+                  </td>
                 </tr>
               );
             })}
