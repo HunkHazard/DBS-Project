@@ -12,33 +12,7 @@ import Main from "./Components/Main";
 import Signout from "./Components/Signout";
 
 function App() {
-  let component;
-
-  switch (window.location.pathname) {
-    case "/":
-      component = <Main />;
-      break;
-    case "/login":
-      component = <Login />;
-      break;
-    case "/signup":
-      component = <Signup />;
-      break;
-    case "/fine":
-      component = <Fine />;
-      break;
-    case "/profile":
-      component = <Profile />;
-      break;
-    case "/search":
-      component = <Search />;
-      break;
-  }
-
-  // console.log(window.location.pathname);
   return (
-    // switch (window.location.pathname)
-
     <div className="App">
       {/* <Navbar /> */}
       {/* {component} */}

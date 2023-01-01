@@ -11,33 +11,14 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  // app.get('/api/all-books', (req, res) => {
-  //     const sqlSelect = "SELECT book_id,title FROM Book";
-  //     db.query(sqlSelect, (err, result) => {
-  //         res.send(result);
-  //     });
-  // });
-
-  function testPass() {
-    let flag = false;
-    flag =
-      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!#\$\%&\^\@\*\(\).*)/.test(
-        password
-      );
-
-    if (flag === true) {
-      submitCredentials();
-    } else {
-      console.log("Bozo");
-    }
-  }
-
   const navigatetoProfile = () => {
     navigate("/profile");
     // , { state: username }
   };
 
   const submitCredentials = () => {
+    console.log(username, password);
+
     Axios.post("http://localhost:3001/login", {
       userName: username,
       password: password,
@@ -100,7 +81,13 @@ export default function Login() {
         />
         <div className="forminputerrormsg" />
       </div>
-      <button className="form_btn" type="submit" onClick={submitCredentials}>
+      <button
+        className="form_btn"
+        type="submit"
+        onClick={() => {
+          submitCredentials();
+        }}
+      >
         Submit
       </button>
       <p className="form_text">

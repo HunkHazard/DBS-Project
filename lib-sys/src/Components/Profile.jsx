@@ -8,9 +8,6 @@ import { useEffect } from "react";
 import Navbar from "./Navbar";
 
 const Profile = () => {
-  // const location = useLocation(); //get the location object from the router
-  // basically, the thing that is passed to the component as propsS
-  // console.log(location.state);
   let username = window.localStorage.getItem("username");
 
   const [firstName, setFirstName] = useState("");
