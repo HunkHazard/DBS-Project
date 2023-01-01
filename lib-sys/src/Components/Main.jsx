@@ -8,7 +8,10 @@ export default function Main() {
   const [query, setQuery] = useState("");
   const [books, setBooks] = useState([]);
 
-  const issueBook = () => {};
+  const issueBook = (b, c) => {
+    console.log(b);
+    console.log(c);
+  };
 
   const submitQuery = (event) => {
     event.preventDefault();
@@ -104,7 +107,14 @@ export default function Main() {
                   </td>
                   <td key={"something"}>
                     {book["status"] == "true" ? (
-                      <button type="submit">Issue</button>
+                      <button
+                        type="submit"
+                        onClick={() => {
+                          issueBook(book["bid"], book["cid"]);
+                        }}
+                      >
+                        Issue
+                      </button>
                     ) : (
                       ""
                     )}

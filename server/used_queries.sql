@@ -1,6 +1,8 @@
 -- all books whether available of not
 create view all_books as
-select b.title as title,
+select b.book_id as bid,
+    c.copy_id as cid,
+    b.title as title,
     a.first_name as fname,
     a.last_name as lname,
     g.name as genre,
@@ -14,7 +16,9 @@ from Book as b
     join Genre as g on b.genre_id = g.genre_id
     join Publication as p on c.publication_id = p.publication_id
 UNION
-select b.title as title,
+select b.book_id as bid,
+    c.copy_id as cid,
+    b.title as title,
     a.first_name as fname,
     a.last_name as lname,
     g.name as genre,
@@ -29,7 +33,9 @@ from Book as b
     join Publication as p on c.publication_id = p.publication_id
 where i.date_issued is null
 UNION
-select b.title as title,
+select b.book_id as bid,
+    c.copy_id as cid,
+    b.title as title,
     a.first_name as fname,
     a.last_name as lname,
     g.name as genre,
@@ -41,5 +47,3 @@ from Book as b
     left join Genre as g on b.genre_id = g.genre_id
     left join Publication as p on c.publication_id = p.publication_id
 where c.book_id is null;
-select *
-from all_books;
